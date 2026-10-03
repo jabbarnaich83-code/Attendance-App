@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance App</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px #ccc;
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background: #198754;
+  color: white;
+  border: none;
+  font-size: 16px;
+}
+
+.stats {
+  display: flex;
+  gap: 10px;
+}
+
+.stat {
+  flex: 1;
+  text-align: center;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+}
+
+.present {
+  color: green;
+  font-weight: bold;
+}
+
+.absent {
+  color: red;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📋 Attendance App</h1>
+
+<div class="card">
+  <h3>حاضری لگائیں</h3>
+
+  <input id="name" type="text" placeholder="نام لکھیں">
+
+  <input id="date" type="date">
+
+  <button onclick="markAttendance('Present')">
+    ✅ حاضر
+  </button>
+
+  <button onclick="markAttendance('Absent')" style="background:#dc3545;">
+    ❌ غیر حاضر
+  </button>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <b id="total">0</b><br>
+    کل
+  </div>
+
+  <div class="stat">
+    <b id="present">0</b><br>
+    حاضر
+  </div>
+
+  <div class="stat">
+    <b id="absent">0</b><br>
+    غیر حاضر
+  </div>
+</div>
+
+<div class="card">
+  <h3>حاضری کا ریکارڈ</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>نام</th>
+        <th>تاریخ</th>
+        <th>حاضری</th>
+      </tr>
+    </thead>
+
+    <tbody id="records"></tbody>
+  </table>
+</div>
+
+</div>
+
+<script>
+
+let attendance =
+JSON.parse(localStorage.getItem("attendance")) || [];
+
+document.getElementById("date").value =
+new Date().toISOString().split("T")[0];
+
+function markAttendance(status) {
+
+  let name = document.getElementById("name").value;
+  let date = document.getElementById("date").value;
+
+  if (name === "") {
+    alert("براہ کرم نام لکھیں");
+    return;
+  }
+
+  attendance.push({
+    name: name,
+    date: date,
+    status: status
+  });
+
+  localStorage.setItem(
+    "attendance",
+    JSON.stringify(attendance)
+  );
+
+  document.getElementById("name").value = "";
+
+  showRecords();
+}
+
+function showRecords() {
+
+  let records =
+  document.getElementById("records");
+
+  records.innerHTML = "";
+
+  attendance.forEach(function(item) {
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.date}</td>
+      <td class="${item.status === 'Present' ? 'present' : 'absent'}">
+        ${item.status === 'Present' ? 'حاضر' : 'غیر حاضر'}
+      </td>
+    `;
+
+    records.appendChild(row);
+  });
+
+  document.getElementById("total").innerText =
+  attendance.length;
+
+  document.getElementById("present").innerText =
+  attendance.filter(x => x.status === "Present").length;
+
+  document.getElementById("absent").innerText =
+  attendance.filter(x => x.status === "Absent").length;
+}
+
+showRecords();
+
+</script>
+
+</body>
+  </html>
