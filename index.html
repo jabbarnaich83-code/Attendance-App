@@ -2,59 +2,123 @@
 <html lang="ur">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mullazmeen Attendance App</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mullazmeen Attendance</title>
 <style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f8;
-    margin:0;
-    padding:15px;
+body{font-family:Arial;background:#f4f6f8;padding:15px}
+.box{max-width:600px;margin:auto;background:white;padding:18px;border-radius:12px}
+input,select,button{width:100%;padding:12px;margin:6px 0;box-sizing:border-box;font-size:16px}
+button{border:0;border-radius:8px;color:white}
+.add{background:#1976d2}.yes{background:#2e7d32}.no{background:#d32f2f}
+.card{background:#f8f8f8;padding:12px;margin:12px 0;border-radius:10px}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #ddd;padding:7px;text-align:center}
+h1,h2{text-align:center}
+</style>
+</head>
+
+<body>
+<div class="box">
+
+<h1>👨‍💼 Mullazmeen Attendance</h1>
+
+<div class="card">
+<h2>Mullazm Add Karein</h2>
+<input id="name" placeholder="Mullazm ka naam">
+<input id="id" placeholder="Employee ID">
+<input id="dept" placeholder="Department">
+<button class="add" onclick="add()">Mullazm Add Karein</button>
+</div>
+
+<div class="card">
+<h2>Attendance</h2>
+<select id="person">
+<option value="">Mullazm Select Karein</option>
+</select>
+<input id="date" type="date">
+<button class="yes" onclick="mark('حاضر')">حاضر</button>
+<button class="no" onclick="mark('غیر حاضر')">غیر حاضر</button>
+</div>
+
+<div class="card">
+<h2>👥 Mullazmeen</h2>
+<table>
+<thead><tr><th>Naam</th><th>ID</th><th>Department</th></tr></thead>
+<tbody id="people"></tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>📋 Attendance Record</h2>
+<table>
+<thead><tr><th>Naam</th><th>Date</th><th>Status</th></tr></thead>
+<tbody id="records"></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+let people=JSON.parse(localStorage.people||"[]");
+let records=JSON.parse(localStorage.records||"[]");
+
+date.value=new Date().toISOString().slice(0,10);
+
+function save(){
+localStorage.people=JSON.stringify(people);
+localStorage.records=JSON.stringify(records);
 }
-.container{
-    max-width:600px;
-    margin:auto;
+
+function show(){
+person.innerHTML='<option value="">Mullazm Select Karein</option>';
+people.forEach((p,i)=>{
+person.innerHTML+=`<option value="${i}">${p.name} - ${p.id}</option>`;
+});
+peopleTable();
+recordTable();
 }
-h1,h2{
-    text-align:center;
+
+function peopleTable(){
+people.innerHTML='';
+people.forEach(p=>{
+document.getElementById('people').innerHTML+=
+`<tr><td>${p.name}</td><td>${p.id}</td><td>${p.dept}</td></tr>`;
+});
 }
-.card{
-    background:white;
-    padding:18px;
-    margin-bottom:15px;
-    border-radius:12px;
-    box-shadow:0 2px 8px #ccc;
+
+function recordTable(){
+document.getElementById('records').innerHTML='';
+records.slice().reverse().forEach(r=>{
+document.getElementById('records').innerHTML+=
+`<tr><td>${r.name}</td><td>${r.date}</td><td>${r.status}</td></tr>`;
+});
 }
-input,select,button{
-    width:100%;
-    padding:12px;
-    margin:6px 0;
-    box-sizing:border-box;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:16px;
+
+function add(){
+if(!name.value||!id.value){
+alert('Naam aur Employee ID likhein');
+return;
 }
-button{
-    border:none;
-    color:white;
-    cursor:pointer;
+people.push({name:name.value,id:id.value,dept:dept.value});
+save();
+name.value='';id.value='';dept.value='';
+show();
+alert('Mullazm add ho gaya');
 }
-.add{
-    background:#1976d2;
+
+function mark(status){
+if(person.value===''){
+alert('Pehle Mullazm select karein');
+return;
 }
-.present{
-    background:#2e7d32;
+let p=people[person.value];
+records.push({name:p.name,date:date.value,status:status});
+save();
+recordTable();
+alert('Attendance lag gayi');
 }
-.absent{
-    background:#d32f2f;
-}
-.delete{
-    background:#777;
-    padding:7px;
-    font-size:13px;
-}
-.stats{
-    display:flex;
-    gap:8px;
-}
+
+show();
+</script>
+</body>
+</html>
