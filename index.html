@@ -8,77 +8,96 @@
 
 <style>
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f8;
-    margin:0;
-    padding:15px;
+font-family:Arial,sans-serif;
+background:#f4f6f8;
+margin:0;
+padding:15px;
 }
 
 .box{
-    max-width:600px;
-    margin:auto;
-    background:white;
-    padding:18px;
-    border-radius:12px;
+max-width:600px;
+margin:auto;
+background:white;
+padding:18px;
+border-radius:12px;
 }
 
 h1,h2{
-    text-align:center;
+text-align:center;
 }
 
 .card{
-    background:#f8f8f8;
-    padding:18px;
-    margin:15px 0;
-    border-radius:12px;
+background:#f8f8f8;
+padding:18px;
+margin:15px 0;
+border-radius:12px;
 }
 
 input,select,button{
-    width:100%;
-    padding:14px;
-    margin:7px 0;
-    box-sizing:border-box;
-    font-size:17px;
-    border-radius:8px;
+width:100%;
+padding:14px;
+margin:7px 0;
+box-sizing:border-box;
+font-size:17px;
+border-radius:8px;
 }
 
 input,select{
-    border:1px solid #999;
-    background:white;
+border:1px solid #999;
+background:white;
 }
 
 button{
-    border:none;
-    color:white;
-    cursor:pointer;
+border:none;
+color:white;
 }
 
 .add{
-    background:#1976d2;
+background:#1976d2;
 }
 
 .present{
-    background:#2e7d32;
+background:#2e7d32;
 }
 
 .absent{
-    background:#d32f2f;
+background:#d32f2f;
+}
+
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.stat{
+padding:15px;
+border-radius:10px;
+text-align:center;
+background:white;
+border:1px solid #ddd;
+}
+
+.stat b{
+display:block;
+font-size:28px;
+margin-top:5px;
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
+width:100%;
+border-collapse:collapse;
+background:white;
 }
 
 th,td{
-    border:1px solid #ddd;
-    padding:8px;
-    text-align:center;
+border:1px solid #ddd;
+padding:8px;
+text-align:center;
 }
 
 th{
-    background:#eeeeee;
+background:#eeeeee;
 }
 </style>
 </head>
@@ -89,15 +108,54 @@ th{
 
 <h1>👨‍💼 Mullazmeen Attendance</h1>
 
+
+<!-- DASHBOARD -->
+
+<div class="card">
+
+<h2>📊 Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">
+👥 کل ملازمین
+<b id="totalEmployees">0</b>
+</div>
+
+<div class="stat">
+📅 آج کی تاریخ
+<b id="todayDate">-</b>
+</div>
+
+<div class="stat">
+✅ آج حاضر
+<b id="todayPresent">0</b>
+</div>
+
+<div class="stat">
+❌ آج غیر حاضر
+<b id="todayAbsent">0</b>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ADD EMPLOYEE -->
+
 <div class="card">
 
 <h2>Mullazm Add Karein</h2>
 
-<input id="employeeName" type="text" placeholder="Mullazm ka naam">
+<input id="employeeName" type="text"
+placeholder="Mullazm ka naam">
 
-<input id="employeeId" type="text" placeholder="Employee ID">
+<input id="employeeId" type="text"
+placeholder="Employee ID">
 
-<input id="department" type="text" placeholder="Department">
+<input id="department" type="text"
+placeholder="Department">
 
 <button class="add" onclick="addEmployee()">
 Mullazm Add Karein
@@ -105,6 +163,8 @@ Mullazm Add Karein
 
 </div>
 
+
+<!-- ATTENDANCE -->
 
 <div class="card">
 
@@ -116,16 +176,20 @@ Mullazm Add Karein
 
 <input id="attendanceDate" type="date">
 
-<button class="present" onclick="markAttendance('حاضر')">
+<button class="present"
+onclick="markAttendance('حاضر')">
 حاضر
 </button>
 
-<button class="absent" onclick="markAttendance('غیر حاضر')">
+<button class="absent"
+onclick="markAttendance('غیر حاضر')">
 غیر حاضر
 </button>
 
 </div>
 
+
+<!-- EMPLOYEES -->
 
 <div class="card">
 
@@ -141,13 +205,14 @@ Mullazm Add Karein
 </tr>
 </thead>
 
-<tbody id="employeeTable">
-</tbody>
+<tbody id="employeeTable"></tbody>
 
 </table>
 
 </div>
 
+
+<!-- ATTENDANCE RECORD -->
 
 <div class="card">
 
@@ -163,8 +228,7 @@ Mullazm Add Karein
 </tr>
 </thead>
 
-<tbody id="attendanceTable">
-</tbody>
+<tbody id="attendanceTable"></tbody>
 
 </table>
 
@@ -203,9 +267,25 @@ document.getElementById("employeeTable");
 const attendanceTable =
 document.getElementById("attendanceTable");
 
+const totalEmployees =
+document.getElementById("totalEmployees");
 
-attendanceDate.value =
+const todayDate =
+document.getElementById("todayDate");
+
+const todayPresent =
+document.getElementById("todayPresent");
+
+const todayAbsent =
+document.getElementById("todayAbsent");
+
+
+let today =
 new Date().toISOString().slice(0,10);
+
+attendanceDate.value = today;
+
+todayDate.innerText = today;
 
 
 function saveData(){
@@ -255,58 +335,13 @@ department:dept
 
 saveData();
 
-
 employeeName.value="";
 employeeId.value="";
 department.value="";
 
-
 showData();
 
-
 alert("Mullazm add ho gaya ✅");
-
-}
-
-
-function showData(){
-
-employeeSelect.innerHTML =
-'<option value="">Mullazm Select Karein</option>';
-
-
-employees.forEach(function(employee,index){
-
-employeeSelect.innerHTML +=
-
-'<option value="' +
-index +
-'">' +
-employee.name +
-' - ' +
-employee.id +
-'</option>';
-
-});
-
-
-employeeTable.innerHTML="";
-
-
-employees.forEach(function(employee){
-
-employeeTable.innerHTML +=
-
-'<tr>' +
-'<td>' + employee.name + '</td>' +
-'<td>' + employee.id + '</td>' +
-'<td>' + employee.department + '</td>' +
-'</tr>';
-
-});
-
-
-showAttendance();
 
 }
 
@@ -343,15 +378,45 @@ status:status
 
 saveData();
 
-showAttendance();
-
+showData();
 
 alert("Attendance lag gayi ✅");
 
 }
 
 
-function showAttendance(){
+function showData(){
+
+employeeSelect.innerHTML =
+'<option value="">Mullazm Select Karein</option>';
+
+
+employees.forEach(function(employee,index){
+
+employeeSelect.innerHTML +=
+'<option value="' + index + '">' +
+employee.name + ' - ' +
+employee.id +
+'</option>';
+
+});
+
+
+employeeTable.innerHTML="";
+
+
+employees.forEach(function(employee){
+
+employeeTable.innerHTML +=
+
+'<tr>' +
+'<td>' + employee.name + '</td>' +
+'<td>' + employee.id + '</td>' +
+'<td>' + employee.department + '</td>' +
+'</tr>';
+
+});
+
 
 attendanceTable.innerHTML="";
 
@@ -371,7 +436,56 @@ attendanceTable.innerHTML +=
 
 });
 
+
+updateDashboard();
+
 }
+
+
+function updateDashboard(){
+
+totalEmployees.innerText =
+employees.length;
+
+
+let selectedDate =
+attendanceDate.value || today;
+
+
+let present = 0;
+let absent = 0;
+
+
+attendance.forEach(function(record){
+
+if(record.date === selectedDate){
+
+if(record.status === "حاضر"){
+present++;
+}
+
+if(record.status === "غیر حاضر"){
+absent++;
+}
+
+}
+
+});
+
+
+todayPresent.innerText = present;
+
+todayAbsent.innerText = absent;
+
+todayDate.innerText = selectedDate;
+
+}
+
+
+attendanceDate.addEventListener(
+"change",
+updateDashboard
+);
 
 
 showData();
